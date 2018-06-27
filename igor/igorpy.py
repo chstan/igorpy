@@ -91,7 +91,8 @@ class Wave(IgorObject):
         self.fs = d['wave_header']['fsValid']
         self.fstop = d['wave_header']['topFullScale']
         self.fsbottom = d['wave_header']['botFullScale']
-        if record.wave['version'] in [1,2,3]:
+        version = record.wave['version']
+        if version in [1,2,3]:
             dims = [d['wave_header']['npnts']] + [0]*(_MAXDIMS-1)
             sfA = [d['wave_header']['hsA']] + [0]*(_MAXDIMS-1)
             sfB = [d['wave_header']['hsB']] + [0]*(_MAXDIMS-1)
@@ -102,8 +103,14 @@ class Wave(IgorObject):
             sfA = d['wave_header']['sfA']
             sfB = d['wave_header']['sfB']
             # TODO find example with multiple data units
-            self.data_units = [d['data_units'].decode(ENCODING)]
-            self.axis_units = [d['dimension_units'].decode(ENCODING)]
+            if version == 5:
+                self.data_units = [d['data_units'].decode(ENCODING)]
+                self.axis_units = [b''.join(d).decode(ENCODING)
+                                   for d in d['wave_header']['dimUnits']]
+            else:
+                self.data_units = [d['data_units'].decode(ENCODING)]
+                self.axis_units = [d['dimension_units'].decode(ENCODING)]
+
         self.data_units.extend(['']*(_MAXDIMS-len(self.data_units)))
         self.data_units = tuple(self.data_units)
         self.axis_units.extend(['']*(_MAXDIMS-len(self.axis_units)))
