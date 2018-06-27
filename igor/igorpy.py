@@ -108,7 +108,7 @@ class Wave(IgorObject):
         self.data_units = tuple(self.data_units)
         self.axis_units.extend(['']*(_MAXDIMS-len(self.axis_units)))
         self.axis_units = tuple(self.axis_units)
-        self.axis = [_numpy.linspace(a,b,c) for a,b,c in zip(sfA, sfB, dims)]
+        self.axis = [_numpy.linspace(b,b + a * (c - 1),c) for a,b,c in zip(sfA, sfB, dims)]
         self.formula = d.get('formula', '')
         self.notes = d.get('note', '')
     def format(self, indent=0):
