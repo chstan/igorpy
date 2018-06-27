@@ -223,7 +223,8 @@ def loads(s, **kwargs):
 def load(filename, **kwargs):
     """Load an igor file"""
     try:
-        packed_experiment = _load(filename)
+        packed_experiment = _load(
+            filename, initial_byte_order=kwargs.pop('initial_byte_order', '='))
     except ValueError as e:
         if e.args[0].startswith('not enough data for the next record header'):
             raise IOError('invalid record header; bad pxp file?')

@@ -55,7 +55,11 @@ SUPERCEDED_MASK = 0x8000  # Bit is set if the record is superceded by
                           # a later record in the packed file.
 
 
-def load(filename, strict=True, ignore_unknown=True):
+def load(filename, strict=True, ignore_unknown=True, initial_byte_order='='):
+    """
+    Probably better to actually infer the initial_byte_order, as can be done
+    from the header. For now though we will let the user deal with this.
+    """
     _LOG.debug('loading a packed experiment file from {}'.format(filename))
     records = []
     if hasattr(filename, 'read'):
@@ -63,7 +67,6 @@ def load(filename, strict=True, ignore_unknown=True):
     else:
         f = open(filename, 'rb')
     byte_order = None
-    initial_byte_order = '='
     try:
         while True:
             PackedFileRecordHeader.byte_order = initial_byte_order
