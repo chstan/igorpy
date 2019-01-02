@@ -17,7 +17,7 @@
 
 "Interface for reading binary IGOR files."
 
-__version__ = '0.3.post0'
+__version__ = '0.3.1'
 
 
 import logging as _logging
