@@ -27,6 +27,8 @@ from .packedfile import PackedFileRecord
 from .folder import FolderStartRecord, FolderEndRecord
 
 
+# Memo No diff with igor2
+
 # From PackedFile.h
 RECORD_TYPE = {
     0: UnusedRecord,

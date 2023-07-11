@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
+# Memo essentially No diff with igor2
+
 import io
 
 from .. import LOG

@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
+# Memo  Diffierence (small but significant)
+
 """Structure and Field classes for declaring structures
 
 There are a few formats that can be used to represent the same data, a
@@ -22,13 +24,12 @@ binary packed format with all the data in a buffer, a linearized
 format with each field in a single Python list, and a nested format
 with each field in a hierarchy of Python dictionaries.
 """
-
+from __future__ import annotations
 from __future__ import absolute_import
 import io
 import logging
 import pprint
 import struct
-
 import numpy as np
 
 from . import LOG
@@ -149,11 +150,13 @@ class Field(object):
     Structure
     """
 
-    def __init__(self, format, name, default=None, help=None, count=1, array=False):
+    def __init__(
+        self, format, name, default=None, help=None, count: int = 1, array: bool = False
+    ) -> None:
         self.format = format
         self.name = name
-        self.default = default
-        self.help = help
+        self.default = default  # Seems not to be used
+        self.help = help  #  Seems not to be used (?)
         self.count = count
         self.array = array
         self.setup()
@@ -161,7 +164,7 @@ class Field(object):
     def setup(self):
         """Setup any dynamic properties of a field.
 
-        Use this method to recalculate dynamic properities after
+        Use this method to recalculate dynamic properties after
         changing the basic properties set during initialization.
         """
         LOG.debug("setup {}".format(self))
@@ -218,10 +221,13 @@ class Field(object):
                     for arg in self.pack_item(item):
                         yield arg
                 if items < self.item_count:
+                    raise NotADirectoryError("Very bad state")
+                    """
                     if f.default is None:
                         raise ValueError("no default for {}.{}".format(self, f))
                     for i in range(self.item_count - items):
                         yield f.default
+                    """
             else:
                 for index in self.indexes():
                     try:
@@ -304,7 +310,7 @@ class Field(object):
 
 
 class DynamicField(Field):
-    """Represent a DynamicStructure field with a dynamic definition.
+    r"""Represent a DynamicStructure field with a dynamic definition.
 
     Adds the methods ``.pre_pack``, ``pre_unpack``, and
     ``post_unpack``, all of which are called when a ``DynamicField``
@@ -512,7 +518,7 @@ class Structure(struct.Struct):
             if isinstance(field.format, Structure):
                 field.format.set_byte_order(byte_order)
 
-    def get_format(self):
+    def get_format(self) -> str:
         format = self.byte_order + "".join(self.sub_format())
         # P format only allowed for native byte ordering
         # Convert P to I for ILP32 compatibility when running on a LP64.
@@ -533,7 +539,7 @@ class Structure(struct.Struct):
             for fmt in field_format:
                 yield fmt
 
-    def _pack_item(self, item=None):
+    def _pack_item(self, item: dict | None = None):
         """Linearize a single count of the structure's data to a flat iterable"""
         if item is None:
             item = {}
@@ -572,7 +578,9 @@ class Structure(struct.Struct):
         except:
             raise ValueError(self.format)
 
-    def pack_into(self, buffer, offset=0, data={}):
+    def pack_into(
+        self, buffer, offset=0, data={}
+    ):  # check !! should data:dict|None = None?
         args = list(self._pack_item(data))
         return super(Structure, self).pack_into(buffer, offset, *args)
 
@@ -696,7 +704,7 @@ class DynamicStructure(Structure):
     # def __init__(self, *args, **kwargs):
     #     pass #self.parent = ..
 
-    def _pre_pack(self, parents=None, data=None):
+    def _pre_pack(self, parents: list | None = None, data=None):
         if parents is None:
             parents = [self]
         else:
@@ -721,7 +729,7 @@ class DynamicStructure(Structure):
             buffer=buffer, offset=offset, data=data
         )
 
-    def unpack_stream(self, stream, parents=None, data=None, d=None):
+    def unpack_stream(self, stream, parents=None, data: dict | None = None, d=None):
         # `d` is the working data directory
         if data is None:
             parents = [self]
@@ -816,8 +824,7 @@ class DynamicStructure(Structure):
                     field_format = self.byte_order + f.format * f.item_count
                     field_format = field_format.replace("P", "I")
                     LOG.debug("parse previous bytes using {}".format(field_format))
-                    struct = struct.Struct(field_format)
-                    items = struct.unpack(raw)
+                    items = struct.Struct(field_format).unpack(raw)
                     return f.unpack_data(items)
 
             # unpacking loop

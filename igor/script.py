@@ -15,17 +15,20 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
+# Memo In igor2 there is not the file named script.py
+
+
 "Common code for scripts distributed with the `igor` package."
 
 from __future__ import absolute_import
 import argparse
 import logging
-import sys as sys
+import sys
 
 import matplotlib.pyplot as plt
 
 from . import __version__
-from . import LOG as LOG
+from . import LOG
 
 
 class Script(object):

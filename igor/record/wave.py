@@ -15,10 +15,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
+# Memo No diff with igor2
+
 from io import BytesIO
 
 from ..binarywave import load as loadibw
-from . import Record
+from .base import Record
 
 
 class WaveRecord(Record):

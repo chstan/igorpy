@@ -16,6 +16,9 @@
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
 
+# Memo No diff with igor2
+
+
 class Record(object):
     def __init__(self, header, data, byte_order=None):
         self.header = header

@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
+# Memo not essential diff
+
 "Read IGOR Binary Wave files into Numpy arrays."
 
 # Based on WaveMetric's Technical Note 003, "Igor Binary Format"
@@ -57,7 +59,7 @@ class StaticStringField(DynamicField):
     _null_terminated = False
     _array_size_field = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         if "array" not in kwargs:
             kwargs["array"] = True
         super(StaticStringField, self).__init__(*args, **kwargs)
@@ -199,7 +201,7 @@ BinHeader5 = Structure(  # `version` field pulled out into Wave
         Field(
             "l",
             "sIndicesSize",
-            help="The size of string indicies if this is a text wave.",
+            help="The size of string indices if this is a text wave.",
         ),
         Field(
             "l", "optionsSize1", default=0, help="Reserved. Write zero. Ignore on read."

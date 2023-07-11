@@ -13,6 +13,10 @@ To see the whole tree, use: print folder.format()
 The usual igor folder types are given in the technical reports
 PTN003.ifn and TN003.ifn.
 """
+
+# Memo no related file in igor2
+
+
 from __future__ import absolute_import
 import io
 import locale

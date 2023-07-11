@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
+# Memo: No essential diff with igor2
+
 "Utility functions for handling buffers"
 
 import sys as sys
@@ -35,7 +37,7 @@ def _ord(byte):
         return ord(byte)
 
 
-def hex_bytes(buffer, spaces=None):
+def hex_bytes(buffer, spaces: int = 0):
     r"""Pretty-printing for binary buffers.
 
     >>> hex_bytes(b'\x00\x01\x02\x03\x04')
@@ -50,7 +52,7 @@ def hex_bytes(buffer, spaces=None):
     '000102 030405 06'
     """
     hex_bytes = ["{:02x}".format(_ord(x)) for x in buffer]
-    if spaces is None:
+    if not spaces:
         return "".join(hex_bytes)
     elif spaces == 1:
         return " ".join(hex_bytes)
