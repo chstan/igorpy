@@ -18,5 +18,5 @@
 from .base import TextRecord
 
 
-class ProcedureRecord (TextRecord):
+class ProcedureRecord(TextRecord):
     pass

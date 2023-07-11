@@ -15,16 +15,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
-from io import BytesIO as _BytesIO
+from io import BytesIO
 
-from ..binarywave import load as _loadibw
+from ..binarywave import load as loadibw
 from . import Record
 
 
-class WaveRecord (Record):
+class WaveRecord(Record):
     def __init__(self, *args, **kwargs):
         super(WaveRecord, self).__init__(*args, **kwargs)
-        self.wave = _loadibw(_BytesIO(bytes(self.data)))
+        self.wave = loadibw(BytesIO(bytes(self.data)))
 
     def __str__(self):
         return str(self.wave)

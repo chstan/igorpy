@@ -18,9 +18,9 @@
 from .base import TextRecord
 
 
-class FolderStartRecord (TextRecord):
+class FolderStartRecord(TextRecord):
     pass
 
 
-class FolderEndRecord (TextRecord):
+class FolderEndRecord(TextRecord):
     pass

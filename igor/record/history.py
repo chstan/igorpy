@@ -18,13 +18,13 @@
 from .base import TextRecord
 
 
-class HistoryRecord (TextRecord):
+class HistoryRecord(TextRecord):
     pass
 
 
-class RecreationRecord (TextRecord):
+class RecreationRecord(TextRecord):
     pass
 
 
-class GetHistoryRecord (TextRecord):
+class GetHistoryRecord(TextRecord):
     pass

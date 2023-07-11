@@ -18,7 +18,7 @@
 "Record parsers for IGOR's packed experiment files."
 
 
-from .base import Record, UnknownRecord, UnusedRecord
+from .base import UnusedRecord
 from .variables import VariablesRecord
 from .history import HistoryRecord, RecreationRecord, GetHistoryRecord
 from .wave import WaveRecord
@@ -40,4 +40,4 @@ RECORD_TYPE = {
     8: PackedFileRecord,
     9: FolderStartRecord,
     10: FolderEndRecord,
-    }
+}

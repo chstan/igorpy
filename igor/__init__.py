@@ -17,14 +17,15 @@
 
 "Interface for reading binary IGOR files."
 
-__version__ = '0.3.1'
+__version__ = "0.3.1"
 
 
-import logging as _logging
+import logging
 
 
-LOG = _logging.getLogger('igor')
-LOG.setLevel(_logging.ERROR)
-LOG.addHandler(_logging.StreamHandler())
+LOG = logging.getLogger("igor")
+LOG.setLevel(logging.ERROR)
+LOG.addHandler(logging.StreamHandler())
 LOG.handlers[-1].setFormatter(
-    _logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
+    logging.Formatter("%(name)s - %(levelname)s - %(message)s")
+)

@@ -16,7 +16,7 @@
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
 
-class Record (object):
+class Record(object):
     def __init__(self, header, data, byte_order=None):
         self.header = header
         self.data = data
@@ -26,22 +26,22 @@ class Record (object):
         return self.__repr__()
 
     def __repr__(self):
-        return '<{} {}>'.format(self.__class__.__name__, id(self))
+        return "<{} {}>".format(self.__class__.__name__, id(self))
 
 
-class UnknownRecord (Record):
+class UnknownRecord(Record):
     def __repr__(self):
-        return '<{}-{} {}>'.format(
-            self.__class__.__name__, self.header['recordType'], id(self))
+        return "<{}-{} {}>".format(
+            self.__class__.__name__, self.header["recordType"], id(self)
+        )
 
 
-class UnusedRecord (Record):
+class UnusedRecord(Record):
     pass
 
 
-class TextRecord (Record):
+class TextRecord(Record):
     def __init__(self, *args, **kwargs):
         super(TextRecord, self).__init__(*args, **kwargs)
-        self.text = bytes(self.data).replace(
-            b'\r\n', b'\n').replace(b'\r', b'\n')
-        self.null_terminated_text = self.text.split(b'\x00', 1)[0]
+        self.text = bytes(self.data).replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+        self.null_terminated_text = self.text.split(b"\x00", 1)[0]
