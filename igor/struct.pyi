@@ -1,23 +1,26 @@
 from __future__ import annotations
-import struct
-from _typeshed import Incomplete
-from collections.abc import Generator
 
+import struct
+from collections.abc import Generator
 from typing import BinaryIO
-from collections.abc import Iterable
+
+import numpy as np
+from _typeshed import Incomplete
+from numpy.typing import NDArray
 
 from igor.binarywave import (
-    DynamicStringIndicesDataField,
+    DynamicDataUnitsField,
     DynamicDependencyFormulaField,
+    DynamicDimensionUnitsField,
+    DynamicLabelsField,
+    DynamicStringIndicesDataField,
     DynamicWaveDataField1,
     DynamicWaveDataField5,
     DynamicWaveNoteField,
     NullStaticStringField,
-    DynamicDataUnitsField,
-    DynamicDimensionUnitsField,
-    DynamicLabelsField,
 )
-from ._typing import IBW, BYTEORDER
+
+from ._typing import BYTEORDER, IBW
 
 
 class Field:
@@ -49,11 +52,16 @@ class Field:
     def indexes(self) -> Generator[int, None, None]:
         ...
 
-    def pack_data(self, data: bytes | None = ...) -> Generator[Incomplete, None, None]:
+    def pack_data(
+        self,
+        data: list[dict[str, complex | NDArray[np.complex_]]]
+        | dict[str, complex | NDArray[np.complex_]]
+        | None = ...,
+    ) -> Generator[Incomplete, None, None]:
         ...
 
     def pack_item(
-        self, item: Iterable | None = ...
+        self, item: Incomplete | None = ...
     ) -> Generator[Incomplete, None, None]:
         ...
 
@@ -93,7 +101,9 @@ class Structure(struct.Struct):
     ]
     byte_order: BYTEORDER
 
-    def __init__(self, name: str, fields, byte_order: BYTEORDER = ...) -> None:
+    def __init__(
+        self, name: str, fields: list[Field], byte_order: BYTEORDER = ...
+    ) -> None:
         ...
 
     def setup(self) -> None:
@@ -108,7 +118,7 @@ class Structure(struct.Struct):
     def sub_format(self) -> Generator[Incomplete, None, None]:
         ...
 
-    def pack(self, data: bytes):
+    def pack(self, data: dict):
         ...
 
     def pack_into(self, buffer, offset: int = ..., data: bytes = ...):
@@ -135,7 +145,7 @@ class DebuggingStream:
 
 
 class DynamicStructure(Structure):
-    def pack(self, data: bytes) -> bytearray:
+    def pack(self, data: dict) -> bytearray:
         ...
 
     def pack_into(self, buffer, offset: int = ..., data: bytes = ...) -> None:

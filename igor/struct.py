@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
-# Memo  Diffierence (small but significant)
+# Memo Diffierence (small but significant)
 
 """Structure and Field classes for declaring structures
 
