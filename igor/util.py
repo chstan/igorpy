@@ -37,7 +37,7 @@ def _ord(byte):
         return ord(byte)
 
 
-def hex_bytes(buffer, spaces: int = 0):
+def hex_bytes(buffer, spaces: int | None = None):
     r"""Pretty-printing for binary buffers.
 
     >>> hex_bytes(b'\x00\x01\x02\x03\x04')
@@ -52,7 +52,7 @@ def hex_bytes(buffer, spaces: int = 0):
     '000102 030405 06'
     """
     hex_bytes = ["{:02x}".format(_ord(x)) for x in buffer]
-    if not spaces:
+    if spaces is None:
         return "".join(hex_bytes)
     elif spaces == 1:
         return " ".join(hex_bytes)

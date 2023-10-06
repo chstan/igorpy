@@ -39,7 +39,7 @@ from .record.wave import WaveRecord
 from .record.variables import VariablesRecord
 
 
-__version__ = "0.10"
+__version__ = "0.3.2"
 
 
 ENCODING = locale.getpreferredencoding() or sys.getdefaultencoding()
