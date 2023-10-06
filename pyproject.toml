@@ -10,7 +10,7 @@ maintainers = [
     { name = "Ryuichi Arafune", email = "ryuichi.arafune@gmail.com" },
 ]
 dependencies = ["numpy"]
-readme = "README.md"
+readme = "README"
 requires-python = ">= 3.10"
 
 [build-system]
