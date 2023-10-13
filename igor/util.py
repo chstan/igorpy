@@ -18,7 +18,7 @@
 # Memo: No essential diff with igor2
 
 "Utility functions for handling buffers"
-
+from __future__ import annotations
 import sys as sys
 
 import numpy as np
@@ -34,7 +34,7 @@ def _ord(byte):
     return byte
 
 
-def hex_bytes(buffer, spaces: int | None = None):
+def hex_bytes(buffer, spaces=None):
     r"""Pretty-printing for binary buffers.
 
     >>> hex_bytes(b'\x00\x01\x02\x03\x04')
@@ -79,9 +79,7 @@ def assert_null(buffer, strict=True):
         if strict:
             raise ValueError(hex_string)
         else:
-            sys.stderr.write(
-                f"warning: post-data padding not zero: {hex_string}\n"
-            )
+            sys.stderr.write(f"warning: post-data padding not zero: {hex_string}\n")
 
 
 # From ReadWave.c
