@@ -31,10 +31,7 @@ def _ord(byte):
     >>> [_ord(b) for b in buffer]
     [0, 1, 2]
     """
-    if sys.version_info >= (3,):
-        return byte
-    else:
-        return ord(byte)
+    return byte
 
 
 def hex_bytes(buffer, spaces: int | None = None):
@@ -51,7 +48,7 @@ def hex_bytes(buffer, spaces: int | None = None):
     >>> hex_bytes(b'\x00\x01\x02\x03\x04\x05\x06', spaces=3)
     '000102 030405 06'
     """
-    hex_bytes = ["{:02x}".format(_ord(x)) for x in buffer]
+    hex_bytes = [f"{_ord(x):02x}" for x in buffer]
     if spaces is None:
         return "".join(hex_bytes)
     elif spaces == 1:
@@ -83,7 +80,7 @@ def assert_null(buffer, strict=True):
             raise ValueError(hex_string)
         else:
             sys.stderr.write(
-                "warning: post-data padding not zero: {}\n".format(hex_string)
+                f"warning: post-data padding not zero: {hex_string}\n"
             )
 
 

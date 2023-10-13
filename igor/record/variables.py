@@ -64,7 +64,7 @@ class DynamicVarDataField(DynamicField):
     def __init__(self, *args, **kwargs):
         if "array" not in kwargs:
             kwargs["array"] = True
-        super(DynamicVarDataField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def pre_pack(self, parents, data):
         raise NotImplementedError()
@@ -85,7 +85,7 @@ class DynamicVarDataField(DynamicField):
 
 class DynamicSysVarField(DynamicVarDataField):
     def _normalize_item(self, index, value):
-        name = "K{}".format(index)
+        name = f"K{index}"
         return (name, value)
 
 
@@ -331,7 +331,7 @@ class DynamicVersionField(DynamicField):
         elif version == 2:
             variables_structure.fields[-1].format = Variables2
         elif not need_to_reorder_bytes:
-            raise ValueError("invalid variables record version: {}".format(version))
+            raise ValueError(f"invalid variables record version: {version}")
 
         if variables_structure.fields[-1].format != old_format:
             LOG.debug(
@@ -358,7 +358,7 @@ VariablesRecordStructure = DynamicStructure(
 
 class VariablesRecord(Record):
     def __init__(self, *args, **kwargs):
-        super(VariablesRecord, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # self.header['version']  # record version always 0?
         VariablesRecordStructure.byte_order = "="
         VariablesRecordStructure.setup()

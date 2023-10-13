@@ -27,7 +27,6 @@
 #   share. We hope IGOR Technical Notes will provide you with lots of
 #   valuable information while you are developing IGOR applications.
 
-from __future__ import absolute_import
 
 import numpy as np
 
@@ -62,7 +61,7 @@ class StaticStringField(DynamicField):
     def __init__(self, *args, **kwargs) -> None:
         if "array" not in kwargs:
             kwargs["array"] = True
-        super(StaticStringField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def post_unpack(self, parents, data):
         wave_structure = parents[-1]
@@ -597,7 +596,7 @@ class DynamicWaveDataField1(DynamicField):
                 order="F",
             )
         except:
-            LOG.error("could not reshape data from {} to {}".format(self.shape, data_b))
+            LOG.error(f"could not reshape data from {self.shape} to {data_b}")
             raise
         return data
 
@@ -782,7 +781,7 @@ class DynamicStringIndicesDataField(DynamicField):
             wdata = wdata.reshape(shape)
         except ValueError:
             LOG.error(
-                "could not reshape strings from {} to {}".format(shape, wdata.shape)
+                f"could not reshape strings from {shape} to {wdata.shape}"
             )
             raise
         wave_data["wData"] = wdata
@@ -817,7 +816,7 @@ class DynamicVersionField(DynamicField):
         elif version == 5:
             wave_structure.fields[-1].format = Wave5
         elif not need_to_reorder_bytes:
-            raise ValueError("invalid binary wave version: {}".format(version))
+            raise ValueError(f"invalid binary wave version: {version}")
 
         if wave_structure.fields[-1].format != old_format:
             LOG.debug(

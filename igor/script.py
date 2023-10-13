@@ -20,7 +20,6 @@
 
 "Common code for scripts distributed with the `igor` package."
 
-from __future__ import absolute_import
 import argparse
 import logging
 import sys
@@ -31,20 +30,20 @@ from . import __version__
 from . import LOG
 
 
-class Script(object):
+class Script:
     log_levels = [logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG]
 
     def __init__(self, description=None, filetype="IGOR Binary Wave (.ibw) file"):
         self.parser = argparse.ArgumentParser(description=description)
         self.parser.add_argument(
-            "--version", action="version", version="%(prog)s {}".format(__version__)
+            "--version", action="version", version=f"%(prog)s {__version__}"
         )
         self.parser.add_argument(
             "-f",
             "--infile",
             metavar="FILE",
             default="-",
-            help="input {}".format(filetype),
+            help=f"input {filetype}",
         )
         self.parser.add_argument(
             "-o", "--outfile", metavar="FILE", default="-", help="file for ASCII output"
@@ -87,7 +86,7 @@ class Script(object):
         try:
             axes.plot(wave["wave"]["wData"], "r.")
         except ValueError as error:
-            LOG.error("error plotting {}: {}".format(title, error))
+            LOG.error(f"error plotting {title}: {error}")
             pass
         self._num_plots += 1
 

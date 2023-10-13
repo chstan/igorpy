@@ -25,7 +25,6 @@ format with each field in a single Python list, and a nested format
 with each field in a hierarchy of Python dictionaries.
 """
 from __future__ import annotations
-from __future__ import absolute_import
 import io
 import logging
 import pprint
@@ -35,7 +34,7 @@ import numpy as np
 from . import LOG
 
 
-class Field(object):
+class Field:
     """Represent a Structure field.
 
     The format argument can be a format character from the ``struct``
@@ -167,7 +166,7 @@ class Field(object):
         Use this method to recalculate dynamic properties after
         changing the basic properties set during initialization.
         """
-        LOG.debug("setup {}".format(self))
+        LOG.debug(f"setup {self}")
         self.item_count = np.prod(self.count)  # number of item repeats
         if not self.array and self.item_count != 1:
             raise ValueError(
@@ -187,7 +186,7 @@ class Field(object):
         return self.__repr__()
 
     def __repr__(self):
-        return "<{} {} {}>".format(self.__class__.__name__, self.name, id(self))
+        return f"<{self.__class__.__name__} {self.name} {id(self)}>"
 
     def indexes(self):
         """Iterate through indexes to a possibly multi-dimensional array"""
@@ -218,8 +217,7 @@ class Field(object):
                 items = 0
                 for item in data.flat:
                     items += 1
-                    for arg in self.pack_item(item):
-                        yield arg
+                    yield from self.pack_item(item)
                 if items < self.item_count:
                     raise NotADirectoryError("Very bad state")
                     """
@@ -239,38 +237,35 @@ class Field(object):
                                 item = item[i]
                     except IndexError:
                         item = None
-                    for arg in self.pack_item(item):
-                        yield arg
+                    yield from self.pack_item(item)
         else:
-            for arg in self.pack_item(data):
-                yield arg
+            yield from self.pack_item(data)
 
     def pack_item(self, item=None):
         """Linearize a single count of the field's data to a flat iterable"""
         if isinstance(self.format, Structure):
-            for i in self.format._pack_item(item):
-                yield i
+            yield from self.format._pack_item(item)
         elif item is None:
             if self.default is None:
-                raise ValueError("no default for {}".format(self))
+                raise ValueError(f"no default for {self}")
             yield self.default
         else:
             yield item
 
     def unpack_data(self, data):
         """Inverse of .pack_data"""
-        LOG.debug("unpack {} for {} {}".format(data, self, self.format))
+        LOG.debug(f"unpack {data} for {self} {self.format}")
         iterator = iter(data)
         try:
             items = [next(iterator) for i in range(self.arg_count)]
         except StopIteration:
-            raise ValueError("not enough data to unpack {}".format(self))
+            raise ValueError(f"not enough data to unpack {self}")
         try:
             next(iterator)
         except StopIteration:
             pass
         else:
-            raise ValueError("too much data to unpack {}".format(self))
+            raise ValueError(f"too much data to unpack {self}")
         if isinstance(self.format, Structure):
             # break into per-structure clumps
             s = self.structure_count
@@ -295,7 +290,7 @@ class Field(object):
         else:
             unpacked = np.array(unpacked)
             LOG.debug(
-                "reshape {} data from {} to {}".format(self, unpacked.shape, count)
+                f"reshape {self} data from {unpacked.shape} to {count}"
             )
             unpacked = unpacked.reshape(count)
         return unpacked
@@ -498,7 +493,7 @@ class Structure(struct.Struct):
         return self.name
 
     def __repr__(self):
-        return "<{} {} {}>".format(self.__class__.__name__, self.name, id(self))
+        return f"<{self.__class__.__name__} {self.name} {id(self)}>"
 
     def setup(self):
         """Setup any dynamic properties of a structure.
@@ -506,13 +501,13 @@ class Structure(struct.Struct):
         Use this method to recalculate dynamic properities after
         changing the basic properties set during initialization.
         """
-        LOG.debug("setup {!r}".format(self))
+        LOG.debug(f"setup {self!r}")
         self.set_byte_order(self.byte_order)
         self.get_format()
 
     def set_byte_order(self, byte_order):
         """Allow changing the format byte_order on the fly."""
-        LOG.debug("set byte order for {!r} to {}".format(self, byte_order))
+        LOG.debug(f"set byte order for {self!r} to {byte_order}")
         self.byte_order = byte_order
         for field in self.fields:
             if isinstance(field.format, Structure):
@@ -524,20 +519,19 @@ class Structure(struct.Struct):
         # Convert P to I for ILP32 compatibility when running on a LP64.
         format = format.replace("P", "I")
         try:
-            super(Structure, self).__init__(format=format)
+            super().__init__(format=format)
         except struct.error as e:
             raise ValueError((e, format))
         return format
 
     def sub_format(self):
-        LOG.debug("calculate sub-format for {!r}".format(self))
+        LOG.debug(f"calculate sub-format for {self!r}")
         for field in self.fields:
             if isinstance(field.format, Structure):
                 field_format = list(field.format.sub_format()) * field.item_count
             else:
                 field_format = [field.format] * field.item_count
-            for fmt in field_format:
-                yield fmt
+            yield from field_format
 
     def _pack_item(self, item: dict | None = None):
         """Linearize a single count of the structure's data to a flat iterable"""
@@ -550,8 +544,7 @@ class Structure(struct.Struct):
                 raise ValueError((f.name, item))
             except KeyError:
                 data = None
-            for arg in f.pack_data(data):
-                yield arg
+            yield from f.pack_data(data)
 
     def _unpack_item(self, args):
         """Inverse of ._unpack_item"""
@@ -561,20 +554,20 @@ class Structure(struct.Struct):
             try:
                 items = [next(iterator) for i in range(f.arg_count)]
             except StopIteration:
-                raise ValueError("not enough data to unpack {}.{}".format(self, f))
+                raise ValueError(f"not enough data to unpack {self}.{f}")
             data[f.name] = f.unpack_data(items)
         try:
             next(iterator)
         except StopIteration:
             pass
         else:
-            raise ValueError("too much data to unpack {}".format(self))
+            raise ValueError(f"too much data to unpack {self}")
         return data
 
     def pack(self, data):
         args = list(self._pack_item(data))
         try:
-            return super(Structure, self).pack(*args)
+            return super().pack(*args)
         except:
             raise ValueError(self.format)
 
@@ -582,10 +575,10 @@ class Structure(struct.Struct):
         self, buffer, offset=0, data={}
     ):  # check !! should data:dict|None = None?
         args = list(self._pack_item(data))
-        return super(Structure, self).pack_into(buffer, offset, *args)
+        return super().pack_into(buffer, offset, *args)
 
     def unpack(self, *args, **kwargs):
-        args = super(Structure, self).unpack(*args, **kwargs)
+        args = super().unpack(*args, **kwargs)
         return self._unpack_item(args)
 
     def unpack_from(self, buffer, offset=0, *args, **kwargs):
@@ -594,21 +587,21 @@ class Structure(struct.Struct):
                 buffer, self, len(buffer), offset, self.format, self.size
             )
         )
-        args = super(Structure, self).unpack_from(buffer, offset, *args, **kwargs)
+        args = super().unpack_from(buffer, offset, *args, **kwargs)
         return self._unpack_item(args)
 
     def get_field(self, name):
         return [f for f in self.fields if f.name == name][0]
 
 
-class DebuggingStream(object):
+class DebuggingStream:
     def __init__(self, stream):
         self.stream = stream
 
     def read(self, size):
         data = self.stream.read(size)
         LOG.debug(
-            "read {} from {}: ({}) {!r}".format(size, self.stream, len(data), data)
+            f"read {size} from {self.stream}: ({len(data)}) {data!r}"
         )
         return data
 
@@ -711,21 +704,21 @@ class DynamicStructure(Structure):
             parents = parents + [self]
         for f in self.fields:
             if hasattr(f, "pre_pack"):
-                LOG.debug("pre-pack {}".format(f))
+                LOG.debug(f"pre-pack {f}")
                 f.pre_pack(parents=parents, data=data)
             if isinstance(f.format, DynamicStructure):
-                LOG.debug("pre-pack {!r}".format(f.format))
+                LOG.debug(f"pre-pack {f.format!r}")
                 f._pre_pack(parents=parents, data=data)
 
     def pack(self, data):
         self._pre_pack(data=data)
         self.setup()
-        return super(DynamicStructure, self).pack(data)
+        return super().pack(data)
 
     def pack_into(self, buffer, offset=0, data={}):
         self._pre_pack(data=data)
         self.setup()
-        return super(DynamicStructure, self).pack_into(
+        return super().pack_into(
             buffer=buffer, offset=offset, data=data
         )
 
@@ -746,13 +739,13 @@ class DynamicStructure(Structure):
                 )
             )
             if LOG.level <= logging.DEBUG:
-                LOG.debug("data:\n{}".format(pprint.pformat(data)))
+                LOG.debug(f"data:\n{pprint.pformat(data)}")
             if hasattr(f, "pre_unpack"):
-                LOG.debug("pre-unpack {}".format(f))
+                LOG.debug(f"pre-unpack {f}")
                 f.pre_unpack(parents=parents, data=data)
 
             if hasattr(f, "unpack"):  # override default unpacking
-                LOG.debug("override unpack for {}".format(f))
+                LOG.debug(f"override unpack for {f}")
                 d[f.name] = f.unpack(stream)
                 continue
 
@@ -777,7 +770,7 @@ class DynamicStructure(Structure):
                             stream, parents=parents, data=data, d=d[f.name]
                         )
                     if hasattr(f, "post_unpack"):
-                        LOG.debug("post-unpack {}".format(f))
+                        LOG.debug(f"post-unpack {f}")
                         repeat = f.post_unpack(parents=parents, data=data)
                         if repeat:
                             raise NotImplementedError(
@@ -786,7 +779,7 @@ class DynamicStructure(Structure):
                     continue
             if isinstance(f.format, Structure):
                 LOG.debug(
-                    "parsing {} bytes for {}".format(f.format.size, f.format.format)
+                    f"parsing {f.format.size} bytes for {f.format.format}"
                 )
                 bs = [stream.read(f.format.size) for i in range(f.item_count)]
 
@@ -807,10 +800,10 @@ class DynamicStructure(Structure):
                     size = struct.calcsize(field_format)
                 except struct.error as e:
                     LOG.error(e)
-                    LOG.error("{}.{}: {}".format(self, f, field_format))
+                    LOG.error(f"{self}.{f}: {field_format}")
                     raise
                 LOG.debug(
-                    "parsing {} bytes for preliminary {}".format(size, field_format)
+                    f"parsing {size} bytes for preliminary {field_format}"
                 )
                 raw = stream.read(size)
                 if len(raw) < size:
@@ -823,7 +816,7 @@ class DynamicStructure(Structure):
                 def unpack():
                     field_format = self.byte_order + f.format * f.item_count
                     field_format = field_format.replace("P", "I")
-                    LOG.debug("parse previous bytes using {}".format(field_format))
+                    LOG.debug(f"parse previous bytes using {field_format}")
                     items = struct.Struct(field_format).unpack(raw)
                     return f.unpack_data(items)
 
@@ -832,12 +825,12 @@ class DynamicStructure(Structure):
             while repeat:
                 d[f.name] = unpack()
                 if hasattr(f, "post_unpack"):
-                    LOG.debug("post-unpack {}".format(f))
+                    LOG.debug(f"post-unpack {f}")
                     repeat = f.post_unpack(parents=parents, data=data)
                 else:
                     repeat = False
                 if repeat:
-                    LOG.debug("repeat unpack for {}".format(f))
+                    LOG.debug(f"repeat unpack for {f}")
 
         return data
 

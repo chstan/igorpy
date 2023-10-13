@@ -25,7 +25,7 @@ from .base import Record
 
 class WaveRecord(Record):
     def __init__(self, *args, **kwargs):
-        super(WaveRecord, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.wave = loadibw(BytesIO(bytes(self.data)))
 
     def __str__(self):

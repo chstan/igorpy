@@ -70,7 +70,7 @@ def load(filename, *, strict=True, ignore_unknown=True, initial_byte_order="="):
     Probably better to actually infer the initial_byte_order, as can be done
     from the header. For now though we will let the user deal with this.
     """
-    LOG.debug("loading a packed experiment file from {}".format(filename))
+    LOG.debug(f"loading a packed experiment file from {filename}")
     records = []
     if hasattr(filename, "read"):
         f = filename  # filename is actually a stream object
@@ -124,7 +124,7 @@ def load(filename, *, strict=True, ignore_unknown=True, initial_byte_order="="):
                 raise KeyError("unkwon record type {}".format(header["recordType"]))
             records.append(record_type(header, data, byte_order=byte_order))
     finally:
-        LOG.debug("finished loading {} records from {}".format(len(records), filename))
+        LOG.debug(f"finished loading {len(records)} records from {filename}")
         if not hasattr(filename, "read"):
             f.close()
 
@@ -145,7 +145,7 @@ def _build_filesystem(records):
     folder end record."""
     # From the Igor Manual, chapter 2, section 8, page II-123
     # http://www.wavemetrics.net/doc/igorman/II-08%20Data%20Folders.pdf
-    """Like the Macintosh file system, Igor Pro's data folders use the
+    r"""Like the Macintosh file system, Igor Pro's data folders use the
     colon character (:) to separate components of a path to an
     object. This is analogous to Unix which uses / and Windows which
     uses \. (Reminder: Igor's data folders exist wholly in memory

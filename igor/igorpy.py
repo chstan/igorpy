@@ -1,7 +1,7 @@
 # This program is in the public domain
 """`igor.py` compatibility layer on top of the `igor` package.
 
-igor.load('filename') or igor.loads('data') loads the content of an igore file
+igor.load('filename') or igor.loads('data') loads the content of an igor file
 into memory as a folder structure.
 
 Returns the root folder.
@@ -17,7 +17,6 @@ PTN003.ifn and TN003.ifn.
 # Memo no related file in igor2
 
 
-from __future__ import absolute_import
 import io
 import locale
 import re
@@ -43,37 +42,35 @@ __version__ = "0.3.2"
 
 
 ENCODING = locale.getpreferredencoding() or sys.getdefaultencoding()
-PYKEYWORDS = set(
-    (
-        "and",
-        "as",
-        "assert",
-        "break",
-        "class",
-        "continue",
-        "def",
-        "elif",
-        "else",
-        "except",
-        "exec",
-        "finally",
-        "for",
-        "global",
-        "if",
-        "import",
-        "in",
-        "is",
-        "lambda",
-        "or",
-        "pass",
-        "print",
-        "raise",
-        "return",
-        "try",
-        "with",
-        "yield",
-    )
-)
+PYKEYWORDS = {
+    "and",
+    "as",
+    "assert",
+    "break",
+    "class",
+    "continue",
+    "def",
+    "elif",
+    "else",
+    "except",
+    "exec",
+    "finally",
+    "for",
+    "global",
+    "if",
+    "import",
+    "in",
+    "is",
+    "lambda",
+    "or",
+    "pass",
+    "print",
+    "raise",
+    "return",
+    "try",
+    "with",
+    "yield",
+}
 PYID = re.compile(r"^[^\d\W]\w*$", re.UNICODE)
 
 
@@ -82,7 +79,7 @@ def valid_identifier(s):
     return PYID.match(s) and s not in PYKEYWORDS
 
 
-class IgorObject(object):
+class IgorObject:
     """Parent class for all objects the parser can return"""
 
     pass
@@ -168,7 +165,7 @@ class Wave(IgorObject):
             type, size = "text", "%d" % len(self.data)
         else:
             type, size = "data", "x".join(str(d) for d in self.data.shape)
-        return " " * indent + "%s %s (%s)" % (self.name, type, size)
+        return " " * indent + "{} {} ({})".format(self.name, type, size)
 
     def __array__(self):
         return self.data
@@ -301,9 +298,9 @@ def load(filename, **kwargs):
         )
     except ValueError as e:
         if e.args[0].startswith("not enough data for the next record header"):
-            raise IOError("invalid record header; bad pxp file?")
+            raise OSError("invalid record header; bad pxp file?")
         elif e.args[0].startswith("not enough data for the next record"):
-            raise IOError("final record too long; bad pxp file?")
+            raise OSError("final record too long; bad pxp file?")
         raise
     return _convert(packed_experiment, **kwargs)
 
@@ -346,5 +343,5 @@ def _convert(packed_experiment, ignore_unknown=True):
         else:
             stack[-1].append(r)
     if len(stack) != 1:
-        raise IOError("FolderStart records do not match FolderEnd records")
+        raise OSError("FolderStart records do not match FolderEnd records")
     return stack[0]
