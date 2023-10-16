@@ -12,7 +12,6 @@ from .record.folder import FolderEndRecord
 from .record.history import HistoryRecord
 from .record.history import GetHistoryRecord
 from .record.history import RecreationRecord
-from .record.packedfile import PackedFileRecord
 from .record.procedure import ProcedureRecord
 from .record.wave import WaveRecord
 from .record.variables import VariablesRecord

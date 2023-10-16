@@ -31,6 +31,7 @@ import pprint
 import struct
 import numpy as np
 
+from . import __version__
 from . import LOG
 
 
@@ -289,9 +290,7 @@ class Field:
                 raise NotImplementedError("reshape Structure field")
         else:
             unpacked = np.array(unpacked)
-            LOG.debug(
-                f"reshape {self} data from {unpacked.shape} to {count}"
-            )
+            LOG.debug(f"reshape {self} data from {unpacked.shape} to {count}")
             unpacked = unpacked.reshape(count)
         return unpacked
 
@@ -600,9 +599,7 @@ class DebuggingStream:
 
     def read(self, size):
         data = self.stream.read(size)
-        LOG.debug(
-            f"read {size} from {self.stream}: ({len(data)}) {data!r}"
-        )
+        LOG.debug(f"read {size} from {self.stream}: ({len(data)}) {data!r}")
         return data
 
 
@@ -718,9 +715,7 @@ class DynamicStructure(Structure):
     def pack_into(self, buffer, offset=0, data={}):
         self._pre_pack(data=data)
         self.setup()
-        return super().pack_into(
-            buffer=buffer, offset=offset, data=data
-        )
+        return super().pack_into(buffer=buffer, offset=offset, data=data)
 
     def unpack_stream(self, stream, parents=None, data: dict | None = None, d=None):
         # `d` is the working data directory
@@ -778,9 +773,7 @@ class DynamicStructure(Structure):
                             )
                     continue
             if isinstance(f.format, Structure):
-                LOG.debug(
-                    f"parsing {f.format.size} bytes for {f.format.format}"
-                )
+                LOG.debug(f"parsing {f.format.size} bytes for {f.format.format}")
                 bs = [stream.read(f.format.size) for i in range(f.item_count)]
 
                 def unpack():
@@ -802,9 +795,7 @@ class DynamicStructure(Structure):
                     LOG.error(e)
                     LOG.error(f"{self}.{f}: {field_format}")
                     raise
-                LOG.debug(
-                    f"parsing {size} bytes for preliminary {field_format}"
-                )
+                LOG.debug(f"parsing {size} bytes for preliminary {field_format}")
                 raw = stream.read(size)
                 if len(raw) < size:
                     raise ValueError(

@@ -58,7 +58,7 @@ class StaticStringField(DynamicField):
     _null_terminated = False
     _array_size_field = None
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs):
         if "array" not in kwargs:
             kwargs["array"] = True
         super().__init__(*args, **kwargs)
@@ -780,9 +780,7 @@ class DynamicStringIndicesDataField(DynamicField):
         try:
             wdata = wdata.reshape(shape)
         except ValueError:
-            LOG.error(
-                f"could not reshape strings from {shape} to {wdata.shape}"
-            )
+            LOG.error(f"could not reshape strings from {shape} to {wdata.shape}")
             raise
         wave_data["wData"] = wdata
 

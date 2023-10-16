@@ -25,7 +25,7 @@ import sys
 import numpy as np
 
 from .binarywave import MAXDIMS
-from .packed import load as _load
+from .packed import load as packed_load
 from .record.base import UnknownRecord
 from .record.folder import FolderStartRecord
 from .record.folder import FolderEndRecord
@@ -293,7 +293,7 @@ def loads(s, **kwargs):
 def load(filename, **kwargs):
     """Load an igor file"""
     try:
-        packed_experiment = _load(
+        packed_experiment = packed_load(
             filename, initial_byte_order=kwargs.pop("initial_byte_order", "=")
         )
     except ValueError as e:
