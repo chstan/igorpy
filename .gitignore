@@ -2,3 +2,6 @@ __pycache__
 *.py[cod]
 
 dist/
+
+requirements-dev.lock
+requirements.lock

@@ -3,11 +3,11 @@ name = "igorpy"
 version = "0.3.2"
 description = "Add your description here"
 authors = [
-    { name = "W. Trevor King", email = "wking@tremily.us" },
-    { name = "Conrad Stansbury", email = "chstan@berkely.edu" },
+  { name = "W. Trevor King", email = "wking@tremily.us" },
+  { name = "Conrad Stansbury", email = "chstan@berkely.edu" },
 ]
 maintainers = [
-    { name = "Ryuichi Arafune", email = "ryuichi.arafune@gmail.com" },
+  { name = "Ryuichi Arafune", email = "ryuichi.arafune@gmail.com" },
 ]
 dependencies = ["numpy"]
 readme = "README.md"
@@ -26,4 +26,6 @@ allow-direct-references = true
 
 [tool.mypy]
 ignore_missing_imports = true
-enable_incomplete_feature = ["Unpack"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/igorpy"]
