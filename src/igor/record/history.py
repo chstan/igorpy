@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2016 W. Trevor King <wking@tremily.us>
+# Copyright (C) 2012 W. Trevor King <wking@tremily.us>
 #
 # This file is part of igor.
 #
@@ -15,16 +15,18 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
-"Interface for reading binary IGOR files."
+# Memo No diff with igor2
 
-__version__ = '0.3.1'
-
-
-import logging as _logging
+from .base import TextRecord
 
 
-LOG = _logging.getLogger('igor')
-LOG.setLevel(_logging.ERROR)
-LOG.addHandler(_logging.StreamHandler())
-LOG.handlers[-1].setFormatter(
-    _logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
+class HistoryRecord(TextRecord):
+    pass
+
+
+class RecreationRecord(TextRecord):
+    pass
+
+
+class GetHistoryRecord(TextRecord):
+    pass

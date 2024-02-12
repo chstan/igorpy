@@ -1,0 +1,31 @@
+[project]
+name = "igorpy"
+version = "0.3.2"
+description = "Add your description here"
+authors = [
+  { name = "W. Trevor King", email = "wking@tremily.us" },
+  { name = "Conrad Stansbury", email = "chstan@berkely.edu" },
+]
+maintainers = [
+  { name = "Ryuichi Arafune", email = "ryuichi.arafune@gmail.com" },
+]
+dependencies = ["numpy"]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = ["pytest>=7.3.2"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/igorpy"]
