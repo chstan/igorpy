@@ -1,4 +1,4 @@
-# Copyright (C) 2012 W. Trevor King <wking@tremily.us>
+# Copyright (C) 2012-2016 W. Trevor King <wking@tremily.us>
 #
 # This file is part of igor.
 #
@@ -15,8 +15,21 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
-from .base import TextRecord
+# Memo: there is a difference with igor2
+
+"Interface for reading binary IGOR files."
+
+from logging import DEBUG, INFO, getLogger, Formatter, StreamHandler
+
+__all__ = ("__version__",)
+
+__version__ = "0.3.2"
 
 
-class ProcedureRecord (TextRecord):
-    pass
+LOGLEVELS = (DEBUG, INFO)
+LOGLEVEL = LOGLEVELS[1]
+LOG = getLogger("igor")
+LOG.setLevel(LOGLEVEL)
+LOG.addHandler(StreamHandler())
+formatter = Formatter("%(name)s - %(levelname)s - %(message)s")
+LOG.handlers[-1].setFormatter(formatter)

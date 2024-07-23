@@ -15,12 +15,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with igor.  If not, see <http://www.gnu.org/licenses/>.
 
+# Memo No diff with igor2
+
 from .base import TextRecord
 
 
-class FolderStartRecord (TextRecord):
+class FolderStartRecord(TextRecord):
     pass
 
 
-class FolderEndRecord (TextRecord):
+class FolderEndRecord(TextRecord):
     pass
