@@ -1,2 +1,8 @@
 __pycache__
 *.pyc
+build/
+pygor.egg-info/
+
+dist/
+.venv/
+.pytest_cache/
